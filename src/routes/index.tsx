@@ -1,24 +1,45 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+import { AiShowcase } from "@/components/landing/ai-showcase";
+import { Features } from "@/components/landing/features";
+import { Hero } from "@/components/landing/hero";
+import { LandingFooter } from "@/components/landing/landing-footer";
+import { LandingNav } from "@/components/landing/landing-nav";
+import { Pricing } from "@/components/landing/pricing";
+import { SocialProof } from "@/components/landing/social-proof";
+
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Nexus HR — AI-Powered Employee Management System" },
+      {
+        name: "description",
+        content:
+          "Nexus HR unifies employee records, attendance, leave, payroll and performance with an AI copilot built into every workflow.",
+      },
+      { property: "og:title", content: "Nexus HR — AI-Powered Employee Management System" },
+      {
+        property: "og:description",
+        content:
+          "The AI-native HR operating system: records, attendance, leave, payroll, performance and analytics in one secure workspace.",
+      },
+    ],
+  }),
+  component: LandingPage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function LandingPage() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background">
+      <LandingNav />
+      <main>
+        <Hero />
+        <Features />
+        <AiShowcase />
+        <SocialProof />
+        <Pricing />
+      </main>
+      <LandingFooter />
     </div>
   );
 }
