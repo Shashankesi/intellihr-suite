@@ -98,6 +98,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { data: profile } = useProfile(user?.id);
   const { primaryRole, isAdmin, isStaff } = useRoles(user?.id);
   const { data: employee } = useCurrentEmployee(user?.id);
+  useRedeemPendingInvite(user?.id);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
