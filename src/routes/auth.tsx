@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowLeft, Loader2, ShieldCheck } from "lucide-react";
+import { ArrowLeft, KeyRound, Loader2, ShieldCheck, User, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -13,8 +13,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSession } from "@/hooks/use-auth";
+import { storePendingInvite } from "@/hooks/use-invite";
 import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
+
 
 type AuthMode = "signin" | "signup" | "forgot";
 
@@ -40,15 +43,47 @@ const signInSchema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
   password: z.string().min(6, "Password must be at least 6 characters").max(72),
   remember: z.boolean().optional(),
+  accessCode: z.string().trim().max(64).optional(),
 });
 
-const signUpSchema = signInSchema.extend({
-  fullName: z.string().trim().min(2, "Enter your full name").max(100),
-});
+const signUpSchema = z
+  .object({
+    email: z.string().trim().email("Enter a valid email").max(255),
+    password: z.string().min(6, "Password must be at least 6 characters").max(72),
+    fullName: z.string().trim().min(2, "Enter your full name").max(100),
+    role: z.enum(["employee", "hr", "admin"]),
+    accessCode: z.string().trim().max(64).optional(),
+  })
+  .refine((v) => v.role === "employee" || Boolean(v.accessCode && v.accessCode.length >= 4), {
+    message: "An access code from your administrator is required for this role",
+    path: ["accessCode"],
+  });
 
 const forgotSchema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
 });
+
+const ROLE_OPTIONS = [
+  {
+    value: "employee" as const,
+    label: "Employee",
+    icon: User,
+    blurb: "Attendance, leave, payslips, goals",
+  },
+  {
+    value: "hr" as const,
+    label: "HR manager",
+    icon: Users,
+    blurb: "People, approvals, payroll runs",
+  },
+  {
+    value: "admin" as const,
+    label: "Administrator",
+    icon: ShieldCheck,
+    blurb: "Full workspace control & audit",
+  },
+];
+
 
 function AuthPage() {
   const { mode } = Route.useSearch();
@@ -154,6 +189,7 @@ function Divider() {
 
 function SignInForm() {
   const navigate = useNavigate();
+  const [showCode, setShowCode] = useState(false);
   const {
     register,
     handleSubmit,
@@ -174,6 +210,8 @@ function SignInForm() {
       toast.error("Could not sign in", { description: error.message });
       return;
     }
+    // Optional elevation code is redeemed once the session is live.
+    if (values.accessCode) storePendingInvite(values.accessCode);
     toast.success("Welcome back");
     navigate({ to: "/dashboard", replace: true });
   };
@@ -204,6 +242,30 @@ function SignInForm() {
           <Input id="password" type="password" autoComplete="current-password" placeholder="••••••••" {...register("password")} />
           {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
         </div>
+
+        {showCode ? (
+          <div className="space-y-1.5">
+            <Label htmlFor="signin-code">Access code (optional)</Label>
+            <Input
+              id="signin-code"
+              placeholder="NEXUS-HR-2F4K"
+              autoCapitalize="characters"
+              {...register("accessCode")}
+            />
+            <p className="text-[11px] text-muted-foreground">
+              Upgrades your account to HR or admin once verified.
+            </p>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setShowCode(true)}
+            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+          >
+            <KeyRound className="size-3.5" /> I have an access code
+          </button>
+        )}
+
         <div className="flex items-center justify-between">
           <label className="flex cursor-pointer items-center gap-2 text-xs text-muted-foreground">
             <Checkbox
@@ -233,8 +295,15 @@ function SignUpForm() {
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors, isSubmitting },
-  } = useForm<z.infer<typeof signUpSchema>>({ resolver: zodResolver(signUpSchema) });
+  } = useForm<z.infer<typeof signUpSchema>>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: { role: "employee" },
+  });
+
+  const role = watch("role");
 
   const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
     const { data, error } = await supabase.auth.signUp({
@@ -242,13 +311,16 @@ function SignUpForm() {
       password: values.password,
       options: {
         emailRedirectTo: window.location.origin,
-        data: { full_name: values.fullName },
+        data: { full_name: values.fullName, requested_role: values.role },
       },
     });
     if (error) {
       toast.error("Could not create account", { description: error.message });
       return;
     }
+    // Elevated roles are granted only by redeeming a valid code once signed in.
+    if (values.accessCode) storePendingInvite(values.accessCode);
+
     // With email confirmation enabled there is no session yet.
     if (!data.session) {
       setSent(true);
@@ -263,7 +335,7 @@ function SignUpForm() {
         <h1 className="text-2xl font-bold">Check your inbox</h1>
         <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">
           We sent you a confirmation link. Click it to verify your email address and activate your
-          Nexus HR workspace.
+          Nexus HR workspace. Your access level is applied on first sign-in.
         </p>
         <Button variant="outline" size="lg" className="mt-6 w-full" asChild>
           <Link to="/auth" search={{ mode: "signin" }}>
@@ -305,9 +377,65 @@ function SignUpForm() {
           <Input id="password" type="password" autoComplete="new-password" placeholder="At least 6 characters" {...register("password")} />
           {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
         </div>
+
+        <div className="space-y-2">
+          <Label>I'm joining as</Label>
+          <div className="grid gap-2">
+            {ROLE_OPTIONS.map((option) => {
+              const active = role === option.value;
+              return (
+                <button
+                  type="button"
+                  key={option.value}
+                  onClick={() => setValue("role", option.value, { shouldValidate: true })}
+                  aria-pressed={active}
+                  className={cn(
+                    "flex items-start gap-3 rounded-xl border p-3 text-left transition-colors",
+                    active
+                      ? "border-primary bg-primary-soft/40"
+                      : "border-border bg-secondary/30 hover:border-border-strong",
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg",
+                      active ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground",
+                    )}
+                  >
+                    <option.icon className="size-4" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[13px] font-medium">{option.label}</span>
+                    <span className="block text-[11px] text-muted-foreground">{option.blurb}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {role !== "employee" && (
+          <div className="space-y-1.5">
+            <Label htmlFor="accessCode">Workspace access code</Label>
+            <Input
+              id="accessCode"
+              placeholder="NEXUS-HR-2F4K"
+              autoCapitalize="characters"
+              {...register("accessCode")}
+            />
+            {errors.accessCode ? (
+              <p className="text-xs text-destructive">{errors.accessCode.message}</p>
+            ) : (
+              <p className="text-[11px] text-muted-foreground">
+                Issued by an administrator from Team &amp; roles. Codes are single-use.
+              </p>
+            )}
+          </div>
+        )}
+
         <p className="rounded-lg border border-border bg-secondary/50 p-3 text-[11px] leading-relaxed text-muted-foreground">
-          Access level is assigned by your workspace administrator. The first account created becomes
-          the admin; everyone else joins as an employee.
+          Elevated access is verified server-side against your access code — the very first account
+          in a fresh workspace automatically becomes the administrator.
         </p>
         <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isSubmitting}>
           {isSubmitting && <Loader2 className="animate-spin" />} Create account
@@ -316,6 +444,7 @@ function SignUpForm() {
     </>
   );
 }
+
 
 function ForgotForm() {
   const [sent, setSent] = useState(false);

@@ -14,6 +14,7 @@ import {
   Menu,
   ScrollText,
   Settings,
+  ShieldCheck,
   Users,
   Wallet,
   X,
@@ -35,8 +36,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCurrentEmployee, useProfile, useRoles, useSession } from "@/hooks/use-auth";
+import { useRedeemPendingInvite } from "@/hooks/use-invite";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+
 
 type NavItem = {
   label: string;
@@ -77,11 +80,13 @@ const NAV_GROUPS: { heading: string; items: NavItem[] }[] = [
   {
     heading: "Workspace",
     items: [
+      { label: "Team & roles", to: "/team", icon: ShieldCheck },
       { label: "Audit log", to: "/audit", icon: ScrollText, access: "admin" },
       { label: "Settings", to: "/settings", icon: Settings },
     ],
   },
 ];
+
 
 /** Application chrome: sidebar, top bar, command palette and page container. */
 export function AppShell({ children }: { children: ReactNode }) {
@@ -93,6 +98,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { data: profile } = useProfile(user?.id);
   const { primaryRole, isAdmin, isStaff } = useRoles(user?.id);
   const { data: employee } = useCurrentEmployee(user?.id);
+  useRedeemPendingInvite(user?.id);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
