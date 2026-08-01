@@ -426,7 +426,7 @@ function OrgReviewsTab() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("performance_reviews")
-        .select("*, employees:employee_id(first_name, last_name, employee_code)")
+        .select("*, employees:employees!performance_reviews_employee_id_fkey(first_name, last_name, employee_code)")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as (Review & { employees: { first_name: string; last_name: string; employee_code: string } | null })[];
