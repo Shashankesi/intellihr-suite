@@ -79,11 +79,13 @@ const NAV_GROUPS: { heading: string; items: NavItem[] }[] = [
   {
     heading: "Workspace",
     items: [
+      { label: "Team & roles", to: "/team", icon: ShieldCheck },
       { label: "Audit log", to: "/audit", icon: ScrollText, access: "admin" },
       { label: "Settings", to: "/settings", icon: Settings },
     ],
   },
 ];
+
 
 /** Application chrome: sidebar, top bar, command palette and page container. */
 export function AppShell({ children }: { children: ReactNode }) {
