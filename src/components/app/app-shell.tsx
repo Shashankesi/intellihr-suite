@@ -14,6 +14,7 @@ import {
   Menu,
   ScrollText,
   Settings,
+  ShieldCheck,
   Users,
   Wallet,
   X,
