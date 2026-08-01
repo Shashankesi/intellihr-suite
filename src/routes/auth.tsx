@@ -40,15 +40,47 @@ const signInSchema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
   password: z.string().min(6, "Password must be at least 6 characters").max(72),
   remember: z.boolean().optional(),
+  accessCode: z.string().trim().max(64).optional(),
 });
 
-const signUpSchema = signInSchema.extend({
-  fullName: z.string().trim().min(2, "Enter your full name").max(100),
-});
+const signUpSchema = z
+  .object({
+    email: z.string().trim().email("Enter a valid email").max(255),
+    password: z.string().min(6, "Password must be at least 6 characters").max(72),
+    fullName: z.string().trim().min(2, "Enter your full name").max(100),
+    role: z.enum(["employee", "hr", "admin"]),
+    accessCode: z.string().trim().max(64).optional(),
+  })
+  .refine((v) => v.role === "employee" || Boolean(v.accessCode && v.accessCode.length >= 4), {
+    message: "An access code from your administrator is required for this role",
+    path: ["accessCode"],
+  });
 
 const forgotSchema = z.object({
   email: z.string().trim().email("Enter a valid email").max(255),
 });
+
+const ROLE_OPTIONS = [
+  {
+    value: "employee" as const,
+    label: "Employee",
+    icon: User,
+    blurb: "Attendance, leave, payslips, goals",
+  },
+  {
+    value: "hr" as const,
+    label: "HR manager",
+    icon: Users,
+    blurb: "People, approvals, payroll runs",
+  },
+  {
+    value: "admin" as const,
+    label: "Administrator",
+    icon: ShieldCheck,
+    blurb: "Full workspace control & audit",
+  },
+];
+
 
 function AuthPage() {
   const { mode } = Route.useSearch();
