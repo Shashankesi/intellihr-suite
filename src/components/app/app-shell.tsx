@@ -35,8 +35,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCurrentEmployee, useProfile, useRoles, useSession } from "@/hooks/use-auth";
+import { useRedeemPendingInvite } from "@/hooks/use-invite";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+
 
 type NavItem = {
   label: string;
