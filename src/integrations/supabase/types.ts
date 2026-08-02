@@ -14,6 +14,95 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_events: {
+        Row: {
+          actor_id: string | null
+          actor_name: string | null
+          created_at: string
+          description: string | null
+          employee_id: string | null
+          id: string
+          kind: string
+          metadata: Json
+          title: string
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_name?: string | null
+          created_at?: string
+          description?: string | null
+          employee_id?: string | null
+          id?: string
+          kind?: string
+          metadata?: Json
+          title: string
+        }
+        Update: {
+          actor_id?: string | null
+          actor_name?: string | null
+          created_at?: string
+          description?: string | null
+          employee_id?: string | null
+          id?: string
+          kind?: string
+          metadata?: Json
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_events_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      announcements: {
+        Row: {
+          audience: string
+          author_id: string | null
+          body: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          pinned: boolean
+          priority: string
+          publish_at: string
+          published: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          audience?: string
+          author_id?: string | null
+          body?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          pinned?: boolean
+          priority?: string
+          publish_at?: string
+          published?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          audience?: string
+          author_id?: string | null
+          body?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          pinned?: boolean
+          priority?: string
+          publish_at?: string
+          published?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       attendance: {
         Row: {
           clock_in: string | null
@@ -94,6 +183,84 @@ export type Database = {
         }
         Relationships: []
       }
+      company_settings: {
+        Row: {
+          address: string | null
+          allow_self_attendance: boolean
+          company_name: string
+          created_at: string
+          currency: string
+          default_casual_leave: number
+          default_earned_leave: number
+          default_sick_leave: number
+          fiscal_year_start: number
+          id: string
+          late_grace_minutes: number
+          legal_name: string | null
+          logo_url: string | null
+          phone: string | null
+          require_leave_approval: boolean
+          singleton: boolean
+          support_email: string | null
+          timezone: string
+          updated_at: string
+          website: string | null
+          work_days: number[]
+          work_end: string
+          work_start: string
+        }
+        Insert: {
+          address?: string | null
+          allow_self_attendance?: boolean
+          company_name?: string
+          created_at?: string
+          currency?: string
+          default_casual_leave?: number
+          default_earned_leave?: number
+          default_sick_leave?: number
+          fiscal_year_start?: number
+          id?: string
+          late_grace_minutes?: number
+          legal_name?: string | null
+          logo_url?: string | null
+          phone?: string | null
+          require_leave_approval?: boolean
+          singleton?: boolean
+          support_email?: string | null
+          timezone?: string
+          updated_at?: string
+          website?: string | null
+          work_days?: number[]
+          work_end?: string
+          work_start?: string
+        }
+        Update: {
+          address?: string | null
+          allow_self_attendance?: boolean
+          company_name?: string
+          created_at?: string
+          currency?: string
+          default_casual_leave?: number
+          default_earned_leave?: number
+          default_sick_leave?: number
+          fiscal_year_start?: number
+          id?: string
+          late_grace_minutes?: number
+          legal_name?: string | null
+          logo_url?: string | null
+          phone?: string | null
+          require_leave_approval?: boolean
+          singleton?: boolean
+          support_email?: string | null
+          timezone?: string
+          updated_at?: string
+          website?: string | null
+          work_days?: number[]
+          work_end?: string
+          work_start?: string
+        }
+        Relationships: []
+      }
       departments: {
         Row: {
           budget: number
@@ -144,30 +311,42 @@ export type Database = {
           content: string | null
           created_at: string
           employee_id: string | null
+          file_name: string | null
+          file_size: number | null
           id: string
+          mime_type: string | null
           owner_id: string
           storage_path: string | null
           title: string
+          updated_at: string
         }
         Insert: {
           category?: string
           content?: string | null
           created_at?: string
           employee_id?: string | null
+          file_name?: string | null
+          file_size?: number | null
           id?: string
+          mime_type?: string | null
           owner_id: string
           storage_path?: string | null
           title: string
+          updated_at?: string
         }
         Update: {
           category?: string
           content?: string | null
           created_at?: string
           employee_id?: string | null
+          file_name?: string | null
+          file_size?: number | null
           id?: string
+          mime_type?: string | null
           owner_id?: string
           storage_path?: string | null
           title?: string
+          updated_at?: string
         }
         Relationships: [
           {
@@ -315,6 +494,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      holidays: {
+        Row: {
+          created_at: string
+          description: string | null
+          holiday_date: string
+          id: string
+          name: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          holiday_date: string
+          id?: string
+          name: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          holiday_date?: string
+          id?: string
+          name?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       leave_balances: {
         Row: {
