@@ -74,8 +74,19 @@ const NAV_GROUPS: { heading: string; items: NavItem[] }[] = [
     ],
   },
   {
+    heading: "Workplace",
+    items: [
+      { label: "Announcements", to: "/announcements", icon: Megaphone },
+      { label: "Documents", to: "/documents", icon: FileText },
+    ],
+  },
+  {
     heading: "Intelligence",
-    items: [{ label: "AI Copilot", to: "/copilot", icon: Bot }],
+    items: [
+      { label: "AI Copilot", to: "/copilot", icon: Bot },
+      { label: "AI Toolkit", to: "/ai-tools", icon: Sparkles },
+    ],
+
   },
   {
     heading: "Workspace",
