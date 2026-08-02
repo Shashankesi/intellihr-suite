@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
   Building2,
@@ -453,7 +453,7 @@ function StaffDirectory({ initialDepartment }: { initialDepartment?: string }) {
                 <TableRow
                   key={e.id}
                   className="cursor-pointer"
-                  onClick={() => setDetailId(e.id)}
+                  onClick={() => { window.location.href = `/employees/${e.id}`; }}
                 >
                   <TableCell>
                     <div className="flex items-center gap-2.5">
