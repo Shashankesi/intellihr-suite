@@ -16,18 +16,22 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthenticatedAiToolsRouteImport } from './routes/_authenticated/ai-tools'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
+import { Route as AuthenticatedAnnouncementsRouteImport } from './routes/_authenticated/announcements'
 import { Route as AuthenticatedAttendanceRouteImport } from './routes/_authenticated/attendance'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
 import { Route as AuthenticatedCopilotRouteImport } from './routes/_authenticated/copilot'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDepartmentsRouteImport } from './routes/_authenticated/departments'
+import { Route as AuthenticatedDocumentsRouteImport } from './routes/_authenticated/documents'
 import { Route as AuthenticatedEmployeesRouteImport } from './routes/_authenticated/employees'
 import { Route as AuthenticatedLeaveRouteImport } from './routes/_authenticated/leave'
 import { Route as AuthenticatedPayrollRouteImport } from './routes/_authenticated/payroll'
 import { Route as AuthenticatedPerformanceRouteImport } from './routes/_authenticated/performance'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
+import { Route as AuthenticatedEmployeesEmployeeIdRouteImport } from './routes/_authenticated/employees.$employeeId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -63,11 +67,22 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAiToolsRoute = AuthenticatedAiToolsRouteImport.update({
+  id: '/ai-tools',
+  path: '/ai-tools',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAnnouncementsRoute =
+  AuthenticatedAnnouncementsRouteImport.update({
+    id: '/announcements',
+    path: '/announcements',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAttendanceRoute = AuthenticatedAttendanceRouteImport.update({
   id: '/attendance',
   path: '/attendance',
@@ -94,6 +109,11 @@ const AuthenticatedDepartmentsRoute =
     path: '/departments',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedDocumentsRoute = AuthenticatedDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedEmployeesRoute = AuthenticatedEmployeesRouteImport.update({
   id: '/employees',
   path: '/employees',
@@ -125,6 +145,12 @@ const AuthenticatedTeamRoute = AuthenticatedTeamRouteImport.update({
   path: '/team',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedEmployeesEmployeeIdRoute =
+  AuthenticatedEmployeesEmployeeIdRouteImport.update({
+    id: '/$employeeId',
+    path: '/$employeeId',
+    getParentRoute: () => AuthenticatedEmployeesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -133,18 +159,22 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/ai-tools': typeof AuthenticatedAiToolsRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
+  '/announcements': typeof AuthenticatedAnnouncementsRoute
   '/attendance': typeof AuthenticatedAttendanceRoute
   '/audit': typeof AuthenticatedAuditRoute
   '/copilot': typeof AuthenticatedCopilotRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
-  '/employees': typeof AuthenticatedEmployeesRoute
+  '/documents': typeof AuthenticatedDocumentsRoute
+  '/employees': typeof AuthenticatedEmployeesRouteWithChildren
   '/leave': typeof AuthenticatedLeaveRoute
   '/payroll': typeof AuthenticatedPayrollRoute
   '/performance': typeof AuthenticatedPerformanceRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/team': typeof AuthenticatedTeamRoute
+  '/employees/$employeeId': typeof AuthenticatedEmployeesEmployeeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -153,18 +183,22 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/ai-tools': typeof AuthenticatedAiToolsRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
+  '/announcements': typeof AuthenticatedAnnouncementsRoute
   '/attendance': typeof AuthenticatedAttendanceRoute
   '/audit': typeof AuthenticatedAuditRoute
   '/copilot': typeof AuthenticatedCopilotRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
-  '/employees': typeof AuthenticatedEmployeesRoute
+  '/documents': typeof AuthenticatedDocumentsRoute
+  '/employees': typeof AuthenticatedEmployeesRouteWithChildren
   '/leave': typeof AuthenticatedLeaveRoute
   '/payroll': typeof AuthenticatedPayrollRoute
   '/performance': typeof AuthenticatedPerformanceRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/team': typeof AuthenticatedTeamRoute
+  '/employees/$employeeId': typeof AuthenticatedEmployeesEmployeeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -175,18 +209,22 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/ai-tools': typeof AuthenticatedAiToolsRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
+  '/_authenticated/announcements': typeof AuthenticatedAnnouncementsRoute
   '/_authenticated/attendance': typeof AuthenticatedAttendanceRoute
   '/_authenticated/audit': typeof AuthenticatedAuditRoute
   '/_authenticated/copilot': typeof AuthenticatedCopilotRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/departments': typeof AuthenticatedDepartmentsRoute
-  '/_authenticated/employees': typeof AuthenticatedEmployeesRoute
+  '/_authenticated/documents': typeof AuthenticatedDocumentsRoute
+  '/_authenticated/employees': typeof AuthenticatedEmployeesRouteWithChildren
   '/_authenticated/leave': typeof AuthenticatedLeaveRoute
   '/_authenticated/payroll': typeof AuthenticatedPayrollRoute
   '/_authenticated/performance': typeof AuthenticatedPerformanceRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/team': typeof AuthenticatedTeamRoute
+  '/_authenticated/employees/$employeeId': typeof AuthenticatedEmployeesEmployeeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -197,18 +235,22 @@ export interface FileRouteTypes {
     | '/contact'
     | '/pricing'
     | '/reset-password'
+    | '/ai-tools'
     | '/analytics'
+    | '/announcements'
     | '/attendance'
     | '/audit'
     | '/copilot'
     | '/dashboard'
     | '/departments'
+    | '/documents'
     | '/employees'
     | '/leave'
     | '/payroll'
     | '/performance'
     | '/settings'
     | '/team'
+    | '/employees/$employeeId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -217,18 +259,22 @@ export interface FileRouteTypes {
     | '/contact'
     | '/pricing'
     | '/reset-password'
+    | '/ai-tools'
     | '/analytics'
+    | '/announcements'
     | '/attendance'
     | '/audit'
     | '/copilot'
     | '/dashboard'
     | '/departments'
+    | '/documents'
     | '/employees'
     | '/leave'
     | '/payroll'
     | '/performance'
     | '/settings'
     | '/team'
+    | '/employees/$employeeId'
   id:
     | '__root__'
     | '/'
@@ -238,18 +284,22 @@ export interface FileRouteTypes {
     | '/contact'
     | '/pricing'
     | '/reset-password'
+    | '/_authenticated/ai-tools'
     | '/_authenticated/analytics'
+    | '/_authenticated/announcements'
     | '/_authenticated/attendance'
     | '/_authenticated/audit'
     | '/_authenticated/copilot'
     | '/_authenticated/dashboard'
     | '/_authenticated/departments'
+    | '/_authenticated/documents'
     | '/_authenticated/employees'
     | '/_authenticated/leave'
     | '/_authenticated/payroll'
     | '/_authenticated/performance'
     | '/_authenticated/settings'
     | '/_authenticated/team'
+    | '/_authenticated/employees/$employeeId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -313,11 +363,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/ai-tools': {
+      id: '/_authenticated/ai-tools'
+      path: '/ai-tools'
+      fullPath: '/ai-tools'
+      preLoaderRoute: typeof AuthenticatedAiToolsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/analytics': {
       id: '/_authenticated/analytics'
       path: '/analytics'
       fullPath: '/analytics'
       preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/announcements': {
+      id: '/_authenticated/announcements'
+      path: '/announcements'
+      fullPath: '/announcements'
+      preLoaderRoute: typeof AuthenticatedAnnouncementsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/attendance': {
@@ -353,6 +417,13 @@ declare module '@tanstack/react-router' {
       path: '/departments'
       fullPath: '/departments'
       preLoaderRoute: typeof AuthenticatedDepartmentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/documents': {
+      id: '/_authenticated/documents'
+      path: '/documents'
+      fullPath: '/documents'
+      preLoaderRoute: typeof AuthenticatedDocumentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/employees': {
@@ -397,17 +468,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTeamRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/employees/$employeeId': {
+      id: '/_authenticated/employees/$employeeId'
+      path: '/$employeeId'
+      fullPath: '/employees/$employeeId'
+      preLoaderRoute: typeof AuthenticatedEmployeesEmployeeIdRouteImport
+      parentRoute: typeof AuthenticatedEmployeesRoute
+    }
   }
 }
 
+interface AuthenticatedEmployeesRouteChildren {
+  AuthenticatedEmployeesEmployeeIdRoute: typeof AuthenticatedEmployeesEmployeeIdRoute
+}
+
+const AuthenticatedEmployeesRouteChildren: AuthenticatedEmployeesRouteChildren =
+  {
+    AuthenticatedEmployeesEmployeeIdRoute:
+      AuthenticatedEmployeesEmployeeIdRoute,
+  }
+
+const AuthenticatedEmployeesRouteWithChildren =
+  AuthenticatedEmployeesRoute._addFileChildren(
+    AuthenticatedEmployeesRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAiToolsRoute: typeof AuthenticatedAiToolsRoute
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
+  AuthenticatedAnnouncementsRoute: typeof AuthenticatedAnnouncementsRoute
   AuthenticatedAttendanceRoute: typeof AuthenticatedAttendanceRoute
   AuthenticatedAuditRoute: typeof AuthenticatedAuditRoute
   AuthenticatedCopilotRoute: typeof AuthenticatedCopilotRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDepartmentsRoute: typeof AuthenticatedDepartmentsRoute
-  AuthenticatedEmployeesRoute: typeof AuthenticatedEmployeesRoute
+  AuthenticatedDocumentsRoute: typeof AuthenticatedDocumentsRoute
+  AuthenticatedEmployeesRoute: typeof AuthenticatedEmployeesRouteWithChildren
   AuthenticatedLeaveRoute: typeof AuthenticatedLeaveRoute
   AuthenticatedPayrollRoute: typeof AuthenticatedPayrollRoute
   AuthenticatedPerformanceRoute: typeof AuthenticatedPerformanceRoute
@@ -416,13 +512,16 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAiToolsRoute: AuthenticatedAiToolsRoute,
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
+  AuthenticatedAnnouncementsRoute: AuthenticatedAnnouncementsRoute,
   AuthenticatedAttendanceRoute: AuthenticatedAttendanceRoute,
   AuthenticatedAuditRoute: AuthenticatedAuditRoute,
   AuthenticatedCopilotRoute: AuthenticatedCopilotRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDepartmentsRoute: AuthenticatedDepartmentsRoute,
-  AuthenticatedEmployeesRoute: AuthenticatedEmployeesRoute,
+  AuthenticatedDocumentsRoute: AuthenticatedDocumentsRoute,
+  AuthenticatedEmployeesRoute: AuthenticatedEmployeesRouteWithChildren,
   AuthenticatedLeaveRoute: AuthenticatedLeaveRoute,
   AuthenticatedPayrollRoute: AuthenticatedPayrollRoute,
   AuthenticatedPerformanceRoute: AuthenticatedPerformanceRoute,
