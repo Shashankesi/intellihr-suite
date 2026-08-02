@@ -8,6 +8,10 @@ import {
   CalendarClock,
   ChevronsLeft,
   ClipboardList,
+  FileText,
+  Megaphone,
+  Sparkles,
+
   Gauge,
   LayoutDashboard,
   LogOut,
