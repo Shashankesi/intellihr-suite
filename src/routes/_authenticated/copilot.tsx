@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
-import { Bot, Send, Sparkles, User } from "lucide-react";
+import { Bot, Plus, Send, Sparkles, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -88,16 +88,30 @@ function CopilotPage() {
 
   return (
     <div className="mx-auto flex h-[calc(100vh-7rem)] max-w-4xl flex-col gap-4">
-      <div className="flex items-center gap-3">
-        <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-          <Bot className="size-5" />
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Bot className="size-5" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">AI Copilot</h1>
+            <p className="text-sm text-muted-foreground">
+              Ask about {employee ? "your" : "the"} attendance, leave, goals{isStaff ? " and org-wide insights" : ""}.
+            </p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">AI Copilot</h1>
-          <p className="text-sm text-muted-foreground">
-            Ask about {employee ? "your" : "the"} attendance, leave, goals{isStaff ? " and org-wide insights" : ""}.
-          </p>
-        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            setMessages([]);
+            setInput("");
+          }}
+          disabled={messages.length === 0 || mutation.isPending}
+        >
+          <Plus className="size-4" />
+          New chat
+        </Button>
       </div>
 
       <Card className="surface-card flex flex-1 flex-col overflow-hidden">

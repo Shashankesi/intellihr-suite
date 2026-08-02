@@ -41,6 +41,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrentEmployee, useRoles, useSession } from "@/hooks/use-auth";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { runAiTool } from "@/lib/ai-tools.functions";
 import { cn } from "@/lib/utils";
@@ -466,6 +467,7 @@ function AiToolsPage() {
   const [selectedTool, setSelectedTool] = useState<ToolConfig | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [viewingHistory, setViewingHistory] = useState<HistoryEntry | null>(null);
+  const isMobile = useIsMobile();
 
   const availableTools = useMemo(() => TOOLS.filter((t) => isStaff || !t.staffOnly), [isStaff]);
 
@@ -579,8 +581,8 @@ function AiToolsPage() {
       </div>
 
       {/* Mobile: tool runner in a dialog */}
-      <Dialog open={Boolean(selectedTool) && typeof window !== "undefined"} onOpenChange={(open) => !open && setSelectedTool(null)}>
-        <DialogContent className={cn("max-h-[90vh] overflow-y-auto lg:hidden", "sm:max-w-lg")}>
+      <Dialog open={isMobile && Boolean(selectedTool)} onOpenChange={(open) => !open && setSelectedTool(null)}>
+        <DialogContent className={cn("max-h-[90vh] overflow-y-auto", "sm:max-w-lg")}>
           <DialogHeader className="sr-only">
             <DialogTitle>{selectedTool?.name ?? "AI tool"}</DialogTitle>
           </DialogHeader>
