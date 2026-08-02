@@ -475,7 +475,8 @@ function StaffDirectory({ initialDepartment }: { initialDepartment?: string }) {
                   <TableCell className="text-right" onClick={(ev) => ev.stopPropagation()}>
                     <RowActions
                       employee={e}
-                      onView={() => setDetailId(e.id)}
+                      onView={() => { window.location.href = `/employees/${e.id}`; }}
+                      onQuickView={() => setDetailId(e.id)}
                       onEdit={() => {
                         setEditingEmployee(e);
                         setFormOpen(true);
@@ -497,7 +498,7 @@ function StaffDirectory({ initialDepartment }: { initialDepartment?: string }) {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               className="surface-card hover-lift cursor-pointer space-y-3 p-4"
-              onClick={() => setDetailId(e.id)}
+              onClick={() => { window.location.href = `/employees/${e.id}`; }}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-2.5">
@@ -512,7 +513,8 @@ function StaffDirectory({ initialDepartment }: { initialDepartment?: string }) {
                 <div onClick={(ev) => ev.stopPropagation()}>
                   <RowActions
                     employee={e}
-                    onView={() => setDetailId(e.id)}
+                    onView={() => { window.location.href = `/employees/${e.id}`; }}
+                      onQuickView={() => setDetailId(e.id)}
                     onEdit={() => {
                       setEditingEmployee(e);
                       setFormOpen(true);
@@ -604,12 +606,14 @@ function StatChip({ icon: Icon, label, value }: { icon: typeof Users; label: str
 function RowActions({
   employee,
   onView,
+  onQuickView,
   onEdit,
   onDelete,
   onStatusChange,
 }: {
   employee: EmployeeWithRelations;
   onView: () => void;
+  onQuickView: () => void;
   onEdit: () => void;
   onDelete: () => void;
   onStatusChange: (status: string) => void;
@@ -623,6 +627,7 @@ function RowActions({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={onView}>View profile</DropdownMenuItem>
+        <DropdownMenuItem onClick={onQuickView}>Quick view</DropdownMenuItem>
         <DropdownMenuItem onClick={onEdit}>Edit</DropdownMenuItem>
         <DropdownMenuSeparator />
         {EMPLOYMENT_STATUSES.filter((s) => s !== employee.status).map((s) => (
