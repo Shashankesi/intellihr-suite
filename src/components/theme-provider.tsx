@@ -3,7 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useState, type React
 /**
  * Theme management.
  *
- * The document starts in dark mode (class applied server-side in __root.tsx),
+ * The document starts in light mode (set server-side in __root.tsx),
  * and the stored preference is reconciled on the client after hydration so we
  * never produce a server/client markup mismatch.
  */
@@ -18,7 +18,7 @@ interface ThemeContextValue {
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
-  theme: "dark",
+  theme: "light",
   setTheme: () => {},
   toggleTheme: () => {},
 });
@@ -30,12 +30,12 @@ function applyTheme(theme: Theme) {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("dark");
+  const [theme, setThemeState] = useState<Theme>("light");
 
   // Reconcile with the persisted preference once we are on the client.
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY) as Theme | null;
-    const next: Theme = stored === "light" || stored === "dark" ? stored : "dark";
+    const next: Theme = stored === "light" || stored === "dark" ? stored : "light";
     setThemeState(next);
     applyTheme(next);
   }, []);

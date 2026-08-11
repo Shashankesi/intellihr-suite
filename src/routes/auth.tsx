@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 type AuthMode = "signin" | "signup" | "forgot";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { mode?: AuthMode } => ({
     mode: (["signin", "signup", "forgot"].includes(String(search.mode))
       ? String(search.mode)
       : "signin") as AuthMode,
