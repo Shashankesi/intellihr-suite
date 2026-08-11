@@ -183,6 +183,80 @@ export type Database = {
         }
         Relationships: []
       }
+      candidates: {
+        Row: {
+          ai_summary: string | null
+          applied_on: string
+          created_at: string
+          email: string
+          expected_salary: number | null
+          experience_years: number | null
+          full_name: string
+          id: string
+          job_id: string
+          location: string | null
+          notes: string | null
+          phone: string | null
+          rating: number | null
+          resume_text: string | null
+          resume_url: string | null
+          skills: string[]
+          source: string | null
+          stage: Database["public"]["Enums"]["candidate_stage"]
+          updated_at: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          applied_on?: string
+          created_at?: string
+          email: string
+          expected_salary?: number | null
+          experience_years?: number | null
+          full_name: string
+          id?: string
+          job_id: string
+          location?: string | null
+          notes?: string | null
+          phone?: string | null
+          rating?: number | null
+          resume_text?: string | null
+          resume_url?: string | null
+          skills?: string[]
+          source?: string | null
+          stage?: Database["public"]["Enums"]["candidate_stage"]
+          updated_at?: string
+        }
+        Update: {
+          ai_summary?: string | null
+          applied_on?: string
+          created_at?: string
+          email?: string
+          expected_salary?: number | null
+          experience_years?: number | null
+          full_name?: string
+          id?: string
+          job_id?: string
+          location?: string | null
+          notes?: string | null
+          phone?: string | null
+          rating?: number | null
+          resume_text?: string | null
+          resume_url?: string | null
+          skills?: string[]
+          source?: string | null
+          stage?: Database["public"]["Enums"]["candidate_stage"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidates_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_openings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_settings: {
         Row: {
           address: string | null
@@ -524,6 +598,131 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      interviews: {
+        Row: {
+          candidate_id: string
+          created_at: string
+          duration_minutes: number
+          feedback: string | null
+          id: string
+          interviewer_id: string | null
+          mode: string
+          round_name: string
+          scheduled_at: string
+          score: number | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          candidate_id: string
+          created_at?: string
+          duration_minutes?: number
+          feedback?: string | null
+          id?: string
+          interviewer_id?: string | null
+          mode?: string
+          round_name?: string
+          scheduled_at: string
+          score?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          candidate_id?: string
+          created_at?: string
+          duration_minutes?: number
+          feedback?: string | null
+          id?: string
+          interviewer_id?: string | null
+          mode?: string
+          round_name?: string
+          scheduled_at?: string
+          score?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interviews_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "candidates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "interviews_interviewer_id_fkey"
+            columns: ["interviewer_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_openings: {
+        Row: {
+          closes_on: string | null
+          created_at: string
+          created_by: string | null
+          department_id: string | null
+          description: string | null
+          employment_type: string
+          id: string
+          location: string | null
+          max_salary: number | null
+          min_salary: number | null
+          openings: number
+          posted_on: string
+          requirements: string | null
+          status: Database["public"]["Enums"]["job_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          closes_on?: string | null
+          created_at?: string
+          created_by?: string | null
+          department_id?: string | null
+          description?: string | null
+          employment_type?: string
+          id?: string
+          location?: string | null
+          max_salary?: number | null
+          min_salary?: number | null
+          openings?: number
+          posted_on?: string
+          requirements?: string | null
+          status?: Database["public"]["Enums"]["job_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          closes_on?: string | null
+          created_at?: string
+          created_by?: string | null
+          department_id?: string | null
+          description?: string | null
+          employment_type?: string
+          id?: string
+          location?: string | null
+          max_salary?: number | null
+          min_salary?: number | null
+          openings?: number
+          posted_on?: string
+          requirements?: string | null
+          status?: Database["public"]["Enums"]["job_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_openings_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       leave_balances: {
         Row: {
@@ -917,6 +1116,13 @@ export type Database = {
         | "half_day"
         | "remote"
         | "holiday"
+      candidate_stage:
+        | "applied"
+        | "screening"
+        | "interview"
+        | "offer"
+        | "hired"
+        | "rejected"
       employment_status:
         | "active"
         | "probation"
@@ -924,6 +1130,7 @@ export type Database = {
         | "terminated"
         | "on_leave"
       employment_type: "full_time" | "part_time" | "contract" | "intern"
+      job_status: "draft" | "open" | "on_hold" | "closed"
       leave_status: "pending" | "approved" | "rejected" | "cancelled"
       leave_type:
         | "casual"
@@ -1070,6 +1277,14 @@ export const Constants = {
         "remote",
         "holiday",
       ],
+      candidate_stage: [
+        "applied",
+        "screening",
+        "interview",
+        "offer",
+        "hired",
+        "rejected",
+      ],
       employment_status: [
         "active",
         "probation",
@@ -1078,6 +1293,7 @@ export const Constants = {
         "on_leave",
       ],
       employment_type: ["full_time", "part_time", "contract", "intern"],
+      job_status: ["draft", "open", "on_hold", "closed"],
       leave_status: ["pending", "approved", "rejected", "cancelled"],
       leave_type: [
         "casual",
