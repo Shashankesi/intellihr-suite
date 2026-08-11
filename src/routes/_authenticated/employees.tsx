@@ -74,7 +74,7 @@ import { cn } from "@/lib/utils";
 const ALL = "__all__";
 
 export const Route = createFileRoute("/_authenticated/employees")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { department?: string } => ({
     department: typeof search.department === "string" ? search.department : undefined,
   }),
   head: () => ({
